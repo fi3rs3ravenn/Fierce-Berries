@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+</head>
+<body>
+    <h1>Catalogue of products</h1>
+    <div>
+        {% for product in products %}
+            <div>
+                <h3>
+                    <a href="{% url 'product_detail' product.id %}">{{ product.name }}</a>
+                </h3>
+                <p>{{ product.description|truncatewords:10 }}</p>
+                <p>Price: {{ product.price }}</p>
+            </div>
+        {% empty %}
+            <p>Out of stock</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
