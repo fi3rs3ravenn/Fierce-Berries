@@ -1,0 +1,15 @@
+<h1>Регистрация</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="username">Логин:</label>
+    <input type="text" name="username" required>
+    
+    <label for="password">Пароль:</label>
+    <input type="password" name="password1" required>
+    
+    <label for="password_confirm">Подтвердите пароль:</label>
+    <input type="password" name="password2" required>
+
+    <button type="submit">Зарегистрироваться</button>
+</form>
+<p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>

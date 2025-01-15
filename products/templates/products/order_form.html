@@ -1,0 +1,14 @@
+<h1>Оформление заказа</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="name">Имя:</label>
+    <input type="text" name="name" required>
+    
+    <label for="phone">Телефон:</label>
+    <input type="text" name="phone" required>
+    
+    <label for="address">Адрес:</label>
+    <textarea name="address" required></textarea>
+
+    <button type="submit">Оформить</button>
+</form>

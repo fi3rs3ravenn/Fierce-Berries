@@ -3,22 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products</title>
+    <title>Каталог товаров</title>
 </head>
 <body>
-    <h1>Catalogue of products</h1>
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li style="color: {{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <p>Привет, {{ user.username }}!</p>
+    <a href="{% url 'profile' %}">Профиль</a> |
+    <a href="{% url 'logout' %}">Выйти</a>
+    {% else %}
+    <a href="{% url 'login' %}">Войти</a> |
+    <a href="{% url 'register' %}">Регистрация</a>
+    {% endif %}
+
+    <h1>Каталог товаров</h1>
+    <form method="GET">
+        <input type="text" name="q" placeholder="Поиск...">
+        <label>Цена от:</label>
+        <input type="number" name="min_price">
+        <label>Цена до:</label>
+        <input type="number" name="max_price">
+        <button type="submit">Искать</button>
+    </form>
+
+    <div>
+        <h3>Категории:</h3>
+        <ul>
+            {% for category in categories %}
+                <li><a href="?category={{ category }}">{{ category }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <div>
         {% for product in products %}
-            <div>
-                <h3>
-                    <a href="{% url 'product_detail' product.id %}">{{ product.name }}</a>
-                </h3>
-                <p>{{ product.description|truncatewords:10 }}</p>
-                <p>Price: {{ product.price }}</p>
+            <div style="margin-bottom: 20px;">
+                <h3><a href="{% url 'product_detail' product.id %}">{{ product.name }}</a></h3>
+                <p>Цена: {{ product.price }}ТГ</p>
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 150px;">
+                {% endif %}
             </div>
         {% empty %}
-            <p>Out of stock</p>
+            <p>Нет товаров по вашему запросу.</p>
         {% endfor %}
     </div>
+
+    <a href="{% url 'cart' %}">Перейти в корзину</a>
 </body>
 </html>

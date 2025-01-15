@@ -1,0 +1,19 @@
+<h1>Привет, {{ user.username }}!</h1>
+<p>Email: {{ user.email }}</p>
+<p><a href="{% url 'logout' %}">Выйти</a></p>
+
+<h2>История заказов</h2>
+<ul>
+    {% for order in orders %}
+        <li>
+            Заказ №{{ order.id }} на сумму {{ order.total_price }}₽ ({{ order.created_at|date:"d.m.Y H:i" }})
+            <ul>
+                {% for item in order.items.all %}
+                    <li>{{ item.product.name }} – {{ item.quantity }} шт.</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% empty %}
+        <li>У вас пока нет заказов.</li>
+    {% endfor %}
+</ul>
