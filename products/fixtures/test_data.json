@@ -1,0 +1,51 @@
+[
+    {
+        "model": "products.category",
+        "pk": 1,
+        "fields": {
+            "name": "Electronics",
+            "description": "Category for all types of electronics"
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 2,
+        "fields": {
+            "name": "Cloth",
+            "description": "Category for clothes"
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 1,
+        "fields": {
+            "name": "Smartphone",
+            "description": "Desc of Smartphone",
+            "price": "30000.00",
+            "stock": 10,
+            "category": 1
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 2,
+        "fields": {
+            "name": "Shirt",
+            "description": "Quality shirt",
+            "price": "2000.00",
+            "stock": 20,
+            "category": 2
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 3,
+        "fields": {
+            "name": "Headphones",
+            "description": "Desc of Headphones",
+            "price": "5000.00",
+            "stock": 15,
+            "category": 1
+        }
+    }
+]
