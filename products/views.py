@@ -1,9 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Order, OrderItem
+from .models import Product, Order, OrderItem , Category
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login , logout
+from .serializers import ProductSerializer, CategorySerializer, OrderSerializer
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 def home(request):
     query = request.GET.get('q', '')
@@ -112,3 +118,43 @@ def profile(request):
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+
+
+
+class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class ProductViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['category', 'price']
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        items_data = serializer.validated_data.pop('items')
+        for item in items_data:
+            product = item['product']
+            if product.stock < item['quantity']:
+                return Response(
+                    {"error": f"Недостаточно товара {product.name} на складе."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        order = serializer.save(user=request.user)
+
+        for item in items_data:
+            product = item['product']
+            product.stock -= item['quantity']
+            product.save()
+            OrderItem.objects.create(order=order, **item)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

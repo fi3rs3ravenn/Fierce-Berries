@@ -1,6 +1,16 @@
-from django.urls import path 
+from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
+from rest_framework.routers import DefaultRouter
+from .views import ProductViewSet, CategoryViewSet, OrderViewSet
+
+
+router = DefaultRouter()
+router.register(r'categories', CategoryViewSet, basename='category')
+router.register(r'products', ProductViewSet, basename='product')
+router.register(r'orders', OrderViewSet, basename='order')
+
+
 
 urlpatterns = [
     path('', views.home , name='home'),
@@ -13,5 +23,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
+    path('api/', include(router.urls)),
 ]
 
