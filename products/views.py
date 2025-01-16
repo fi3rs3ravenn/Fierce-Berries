@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import AllowAny 
 
 
 def home(request):
@@ -135,10 +136,12 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    permission_classes = [AllowAny] 
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         items_data = serializer.validated_data.pop('items')
         for item in items_data:
             product = item['product']
@@ -148,7 +151,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-        order = serializer.save(user=request.user)
+        order = serializer.save(user=request.user if request.user.is_authenticated else None)
 
         for item in items_data:
             product = item['product']
