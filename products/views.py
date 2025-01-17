@@ -79,7 +79,7 @@ def create_order(request):
             product.stock -= cart[str(product.id)]
             product.save()
 
-        request.session['cart'] = {}  # Очищаем корзину после успешного заказа
+        request.session['cart'] = {} 
         messages.success(request, "Ваш заказ успешно оформлен!")
         return redirect('home')
 
