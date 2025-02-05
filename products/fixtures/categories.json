@@ -1,0 +1,164 @@
+[
+    {
+        "model": "products.category",
+        "pk": 1,
+        "fields": {
+            "name": "Женщинам",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 2,
+        "fields": {
+            "name": "Мужчинам",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 3,
+        "fields": {
+            "name": "Детям",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 4,
+        "fields": {
+            "name": "Обувь",
+            "parent": 1,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 5,
+        "fields": {
+            "name": "Дом",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 6,
+        "fields": {
+            "name": "Красота",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 7,
+        "fields": {
+            "name": "Аксессуары",
+            "parent": 1,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 8,
+        "fields": {
+            "name": "Игрушки",
+            "parent": 3,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 9,
+        "fields": {
+            "name": "Мебель",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 10,
+        "fields": {
+            "name": "Продукты",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 11,
+        "fields": {
+            "name": "Электроника",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 12,
+        "fields": {
+            "name": "Бытовая техника",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 13,
+        "fields": {
+            "name": "Зоотовары",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 14,
+        "fields": {
+            "name": "Спорт",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 15,
+        "fields": {
+            "name": "Автотовары",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 16,
+        "fields": {
+            "name": "Музыкальные инструменты",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 17,
+        "fields": {
+            "name": "Здоровье",
+            "parent": null,
+            "description": ""
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 18,
+        "fields": {
+            "name": "Канцтовары",
+            "parent": null,
+            "description": ""
+        }
+    }
+]
