@@ -2,14 +2,15 @@ from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 from rest_framework.routers import DefaultRouter
-from .views import ProductViewSet, CategoryViewSet, OrderViewSet
+from .views import ProductViewSet, CategoryViewSet, OrderViewSet , ProfileView , CartViewSet
 
 
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet, basename='category')
 router.register(r'products', ProductViewSet, basename='product')
 router.register(r'orders', OrderViewSet, basename='order')
-
+# router.register(r'profile', ProfileView, basename='profile')
+router.register(r'cart', CartViewSet, basename='cart')
 
 
 urlpatterns = [
@@ -24,5 +25,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
     path('api/', include(router.urls)),
+    path('profile/api/' , ProfileView.as_view(), name='profile-api')
 ]
 

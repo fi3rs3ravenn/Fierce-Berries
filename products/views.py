@@ -1,16 +1,17 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Order, OrderItem , Category
+from .models import Product, Order, OrderItem , Category , Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login , logout
-from .serializers import ProductSerializer, CategorySerializer, OrderSerializer
-from rest_framework import viewsets
+from .serializers import ProductSerializer, CategorySerializer, OrderSerializer , ProfileSerializer , CartItemSerializer    
+from rest_framework import viewsets , generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import AllowAny 
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny , IsAuthenticated , IsAuthenticatedOrReadOnly
 
 
 def home(request):
@@ -123,6 +124,14 @@ def logout_view(request):
 
 
 
+class ProfileView(generics.RetrieveAPIView):
+    quaryset = Profile.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        return self.request.user.profile
+
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
@@ -164,3 +173,65 @@ class OrderViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
+
+class CartViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def list(self, request):
+        cart = request.session.get('cart', {})
+        cart_items = []
+        total_price = 0
+
+        for product_id, quantity in cart.items():
+            product = get_object_or_404(Product, id=product_id)
+            cart_items.append({
+                'product': product.name,
+                'price': float(product.price),
+                'quantity': quantity,
+                'total': float(product.price) * quantity
+            })
+            total_price += product.price * quantity
+
+        return Response({'cart': cart_items, 'total_price': total_price})
+
+    @action(detail=False, methods=['post'])
+    def add(self, request):
+        serializer = CartItemSerializer(data=request.data)
+        if serializer.is_valid():
+            product_id = serializer.validated_data['product_id']
+            quantity = serializer.validated_data['quantity']
+            product = get_object_or_404(Product, id=product_id)
+
+            cart = request.session.get('cart', {})
+
+            if str(product_id) in cart:
+                if cart[str(product_id)] + quantity > product.stock:
+                    return Response({"error": "Недостаточно товара на складе."}, status=400)
+                cart[str(product_id)] += quantity
+            else:
+                if quantity > product.stock:
+                    return Response({"error": "Недостаточно товара на складе."}, status=400)
+                cart[str(product_id)] = quantity
+
+            request.session['cart'] = cart
+            return Response({"message": "Товар добавлен в корзину.", "cart": cart})
+        return Response(serializer.errors, status=400)
+
+    @action(detail=False, methods=['post'])
+    def remove(self, request):
+        serializer = CartItemSerializer(data=request.data)
+        if serializer.is_valid():
+            product_id = serializer.validated_data['product_id']
+
+            cart = request.session.get('cart', {})
+            if str(product_id) in cart:
+                del cart[str(product_id)]
+                request.session['cart'] = cart
+                return Response({"message": "Товар удалён из корзины.", "cart": cart})
+            return Response({"error": "Товар не найден в корзине."}, status=400)
+        return Response(serializer.errors, status=400)
+
+    @action(detail=False, methods=['post'])
+    def clear(self, request):
+        request.session['cart'] = {}
+        return Response({"message": "Корзина очищена."})
